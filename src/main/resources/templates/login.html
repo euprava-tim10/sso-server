@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org/">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" th:href="@{/bootstrap-4.5.3-dist/css/bootstrap.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/bootstrap-4.5.3-dist/css/bootstrap-grid.css}">
+    </head>
+
+    <div class="col-12">
+        <div th:if="${param.keySet().contains('error')}" class="row justify-content-center">
+            <div class="col-lg-6 col-md-12 col-sm-12 align-self-center alert alert-danger" role="alert" th:text="#{login.error}">
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-12 col-sm-12 align-self-center border p-1 bg-light">
+                <div th:switch="${scope}">
+                    <p th:case="'create_post'">
+                        You will allow app to create posts.
+                        No other permissions are allowed.
+                    </p>
+
+                    <p th:case="'full'">
+                        You will allow app full permission.
+                    </p>
+                </div>
+
+                <form method="post" th:action="@{/login}">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input class="form-control" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+
+                    <input type="hidden" name="responseType" th:value="${responseType}"/>
+                    <input type="hidden" name="clientId" th:value="${clientId}"/>
+                    <input type="hidden" name="redirectUri" th:value="${redirectUri}"/>
+                    <input type="hidden" name="scope" th:value="${scope}"/>
+                    <input type="hidden" name="state" th:value="${state}"/>
+
+                    <input type="submit" class="btn btn-primary w-100"></input>
+                </form>
+            </div>
+        </div>
+    </div>
+</html>
