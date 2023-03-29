@@ -11,5 +11,5 @@ public class LoginFormDTO {
     private String password;
 
     private String redirectUri;
-    private String scope;
+    private String service;
 }

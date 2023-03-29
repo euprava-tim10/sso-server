@@ -4,6 +4,8 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -18,7 +20,6 @@ public class User {
 
     private String password;
 
-    public boolean isAdmin() {
-        return false;
-    }
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<ServiceRole> serviceRoles;
 }

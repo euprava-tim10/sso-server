@@ -17,17 +17,6 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-12 col-sm-12 align-self-center border p-1 bg-light">
-                <div th:switch="${scope}">
-                    <p th:case="'create_post'">
-                        You will allow app to create posts.
-                        No other permissions are allowed.
-                    </p>
-
-                    <p th:case="'full'">
-                        You will allow app full permission.
-                    </p>
-                </div>
-
                 <form method="post" th:action="@{/login}">
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -38,11 +27,8 @@
                         <input type="password" class="form-control" id="password" name="password">
                     </div>
 
-                    <input type="hidden" name="responseType" th:value="${responseType}"/>
-                    <input type="hidden" name="clientId" th:value="${clientId}"/>
                     <input type="hidden" name="redirectUri" th:value="${redirectUri}"/>
-                    <input type="hidden" name="scope" th:value="${scope}"/>
-                    <input type="hidden" name="state" th:value="${state}"/>
+                    <input type="hidden" name="scope" th:value="${service}"/>
 
                     <input type="submit" class="btn btn-primary w-100"></input>
                 </form>

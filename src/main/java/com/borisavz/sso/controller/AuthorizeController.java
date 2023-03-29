@@ -25,14 +25,12 @@ public class AuthorizeController {
     @GetMapping("/authorize")
     public String getLoginPage(
             @RequestParam("redirect_uri") String redirectUri,
-            @RequestParam("scope") String scope,
-            @RequestParam(value = "state", required = false) String state,
+            @RequestParam("service") String service,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         model.addAttribute("redirectUri", redirectUri);
-        model.addAttribute("scope", scope);
-        model.addAttribute("state", state);
+        model.addAttribute("service", service);
 
         return "login";
     }
@@ -53,7 +51,7 @@ public class AuthorizeController {
             return "redirect://" + loginFormDTO.getRedirectUri() + hash;
         } catch (InvalidUserCredentialsException e) {
             redirectAttributes.addAttribute("redirect_uri", loginFormDTO.getRedirectUri());
-            redirectAttributes.addAttribute("scope", loginFormDTO.getScope());
+            redirectAttributes.addAttribute("service", loginFormDTO.getService());
 
             return "redirect://localhost:8080/authorize";
         }
