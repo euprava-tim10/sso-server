@@ -7,10 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ImplicitGrantTokenResponseDTO {
+public class TokenResponseDTO {
 
     private String accessToken;
-    private String tokenType;
-    private long expiresIn;
-    private String scope;
 }

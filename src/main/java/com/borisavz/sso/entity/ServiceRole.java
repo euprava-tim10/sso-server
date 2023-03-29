@@ -16,8 +16,9 @@ public class ServiceRole {
     @GeneratedValue
     private long id;
 
-    @Column(unique = true)
     private String service;
+
+    private String role;
 
     @Convert(converter = HashMapConverter.class)
     private Map<String, Object> attributes;

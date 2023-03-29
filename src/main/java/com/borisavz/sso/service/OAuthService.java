@@ -1,6 +1,7 @@
 package com.borisavz.sso.service;
 
 import com.borisavz.sso.dto.*;
+import com.borisavz.sso.entity.ServiceRole;
 import com.borisavz.sso.entity.User;
 import com.borisavz.sso.exception.*;
 import com.borisavz.sso.repository.UserRepository;
@@ -28,9 +29,7 @@ public class OAuthService {
     private static final long ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
     private static final long ONE_WEEK_MILLISECONDS = ONE_WEEK_SECONDS * 1000;
 
-    public ImplicitGrantTokenResponseDTO generateTokenImplicitGrant(LoginFormDTO loginFormDTO) throws InvalidClientException, InvalidRequestException, InvalidUserCredentialsException {
-
-        UUID tokenId = UUID.randomUUID();
+    public TokenResponseDTO generateTokenImplicitGrant(LoginFormDTO loginFormDTO) throws InvalidClientException, InvalidRequestException, InvalidUserCredentialsException {
 
         Map<String, Object> claims = new HashMap<>();
 
@@ -40,8 +39,19 @@ public class OAuthService {
             throw new InvalidUserCredentialsException();
 
         claims.put("username",loginFormDTO.getUsername());
-        //claims.put("scope", clientRegistration.getMinScope(loginFormDTO.getScope()));
-        claims.put("token_id", tokenId.toString());
+        claims.put("service", loginFormDTO.getService());
+
+        Optional<ServiceRole> optionalServiceRole = user.getServiceRoles().stream()
+                .filter(r -> r.getService().equals(loginFormDTO.getService()))
+                .findFirst();
+
+        if(optionalServiceRole.isEmpty())
+            throw new InvalidUserCredentialsException();
+
+        ServiceRole serviceRole = optionalServiceRole.get();
+
+        claims.put("role", serviceRole.getRole());
+        claims.putAll(serviceRole.getAttributes());
 
         String tokenString = Jwts.builder()
                 .setClaims(claims)
@@ -51,19 +61,12 @@ public class OAuthService {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
 
-        return ImplicitGrantTokenResponseDTO.builder()
+        return TokenResponseDTO.builder()
                 .accessToken(tokenString)
-                .tokenType("bearer")
-                .expiresIn(ONE_WEEK_SECONDS)
-                //.scope(clientRegistration.getAllowedScope())
                 .build();
     }
 
     private Date oneWeekFromNow() {
         return new Date(System.currentTimeMillis() + ONE_WEEK_MILLISECONDS);
-    }
-
-    private Date tenMinutesBeforeNow() {
-        return new Date(System.currentTimeMillis() - 10 * 60 * 1000);
     }
 }
