@@ -9,5 +9,9 @@ import lombok.*;
 @Builder
 public class TokenResponseDTO {
 
+    private String ssoToken;
+    private boolean ssoLoginSuccessful;
+
     private String accessToken;
+    private boolean serviceLoginSuccessful;
 }
