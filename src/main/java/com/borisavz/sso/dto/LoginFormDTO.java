@@ -12,4 +12,6 @@ public class LoginFormDTO {
 
     private String redirectUri;
     private String service;
+
+    private boolean saveLogin;
 }

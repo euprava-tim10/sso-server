@@ -1,9 +1,11 @@
 package com.borisavz.sso.service;
 
 import com.borisavz.sso.dto.*;
+import com.borisavz.sso.entity.SavedLogin;
 import com.borisavz.sso.entity.ServiceRole;
 import com.borisavz.sso.entity.User;
 import com.borisavz.sso.exception.*;
+import com.borisavz.sso.repository.SavedLoginRepository;
 import com.borisavz.sso.repository.UserRepository;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -20,6 +23,9 @@ public class OAuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SavedLoginRepository savedLoginRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -29,7 +35,15 @@ public class OAuthService {
     private static final long ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
     private static final long ONE_WEEK_MILLISECONDS = ONE_WEEK_SECONDS * 1000;
 
-    public TokenResponseDTO generateTokenImplicitGrant(LoginFormDTO loginFormDTO) {
+    public List<SavedLogin> getValidSavedLogins(String ssoToken) {
+        List<SavedLogin> allSavedLogins = savedLoginRepository.getBySsoToken(ssoToken);
+
+        return allSavedLogins.stream()
+                .filter(SavedLogin::isValid)
+                .collect(Collectors.toList());
+    }
+
+    public TokenResponseDTO generateTokenImplicitGrant(LoginFormDTO loginFormDTO, String ssoToken) {
         User user = userRepository.findByUsername(loginFormDTO.getUsername());
 
         if(!passwordEncoder.matches(loginFormDTO.getPassword(), user.getPassword())) {
@@ -39,18 +53,17 @@ public class OAuthService {
                     .build();
         }
 
-        Map<String, Object> ssoClaims = new HashMap<>();
+        if(loginFormDTO.isSaveLogin()) {
+            savedLoginRepository.deleteBySsoTokenAndUsername(ssoToken, loginFormDTO.getUsername());
 
-        ssoClaims.put("username",loginFormDTO.getUsername());
-        ssoClaims.put("service", "SSO");
+            SavedLogin savedLogin = SavedLogin.builder()
+                    .username(loginFormDTO.getUsername())
+                    .ssoToken(ssoToken)
+                    .expiresAt(oneWeekFromNow())
+                    .build();
 
-        String ssoTokenString = Jwts.builder()
-                .setClaims(ssoClaims)
-                .setIssuer(jwtIssuer)
-                .setIssuedAt(new Date())
-                .setExpiration(oneWeekFromNow())
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
+            savedLoginRepository.save(savedLogin);
+        }
 
         Optional<ServiceRole> optionalServiceRole = user.getServiceRoles().stream()
                 .filter(r -> r.getService().equals(loginFormDTO.getService()))
@@ -58,7 +71,6 @@ public class OAuthService {
 
         if(optionalServiceRole.isEmpty()) {
             return TokenResponseDTO.builder()
-                    .ssoToken(ssoTokenString)
                     .ssoLoginSuccessful(true)
                     .serviceLoginSuccessful(false)
                     .build();
@@ -82,21 +94,32 @@ public class OAuthService {
                 .compact();
 
         return TokenResponseDTO.builder()
-                .ssoToken(ssoTokenString)
                 .ssoLoginSuccessful(true)
                 .accessToken(tokenString)
                 .serviceLoginSuccessful(true)
                 .build();
     }
 
-    public TokenResponseDTO generateServiceTokenFromSsoToken(String ssoToken, String service) {
-        if(!validateToken(ssoToken)) {
+    public TokenResponseDTO generateServiceTokenFromSsoToken(String ssoToken, String username, String service) {
+        Optional<SavedLogin> optionalSavedLogin = savedLoginRepository.findBySsoTokenAndUsername(ssoToken, username);
+
+        if(optionalSavedLogin.isEmpty()) {
             return TokenResponseDTO.builder()
                     .ssoLoginSuccessful(false)
+                    .serviceLoginSuccessful(false)
                     .build();
         }
 
-        User user = userRepository.findByUsername(getUsername(ssoToken));
+        SavedLogin savedLogin = optionalSavedLogin.get();
+
+        if(!savedLogin.isValid()) {
+            return TokenResponseDTO.builder()
+                    .ssoLoginSuccessful(false)
+                    .serviceLoginSuccessful(false)
+                    .build();
+        }
+
+        User user = userRepository.findByUsername(username);
 
         Optional<ServiceRole> optionalServiceRole = user.getServiceRoles().stream()
                 .filter(r -> r.getService().equals(service))
@@ -113,7 +136,7 @@ public class OAuthService {
 
         Map<String, Object> serviceClaims = new HashMap<>();
 
-        serviceClaims.put("username",user.getUsername());
+        serviceClaims.put("username", user.getUsername());
         serviceClaims.put("service", service);
         serviceClaims.put("role", serviceRole.getRole());
         serviceClaims.putAll(serviceRole.getAttributes());
@@ -151,15 +174,6 @@ public class OAuthService {
         }
 
         return false;
-    }
-
-    public String getUsername(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return (String) claims.get("username");
     }
 
     private Date oneWeekFromNow() {

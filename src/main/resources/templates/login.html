@@ -15,6 +15,15 @@
             <div class="col-lg-6 col-md-12 col-sm-12 align-self-center alert alert-danger" role="alert" th:text="#{login.error}">
             </div>
         </div>
+
+        <div th:unless="${savedLogins.isEmpty()}" class="row justify-content-center">
+            <p>Saved logins</p>
+
+            <a th:each="savedLogin : ${savedLogins}"
+               th:text="${savedLogin.username}"
+               th:href="${'/saved/' + savedLogin.username + '?redirect_uri=' + #uris.escapePathSegment(redirectUri) + '&service=' + #uris.escapePathSegment(service)}"></a>
+        </div>
+
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-12 col-sm-12 align-self-center border p-1 bg-light">
                 <form method="post" th:action="@{/login}">
@@ -25,6 +34,10 @@
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Remember me</label>
+                        <input type="checkbox" class="form-control" id="saveLogin" name="saveLogin">
                     </div>
 
                     <input type="hidden" name="redirectUri" th:value="${redirectUri}"/>
