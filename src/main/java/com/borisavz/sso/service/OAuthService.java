@@ -57,7 +57,7 @@ public class OAuthService {
             savedLoginRepository.deleteBySsoTokenAndUsername(ssoToken, loginFormDTO.getUsername());
 
             SavedLogin savedLogin = SavedLogin.builder()
-                    .username(loginFormDTO.getUsername())
+                    .user(user)
                     .ssoToken(ssoToken)
                     .expiresAt(oneWeekFromNow())
                     .build();
@@ -137,6 +137,8 @@ public class OAuthService {
         Map<String, Object> serviceClaims = new HashMap<>();
 
         serviceClaims.put("username", user.getUsername());
+        serviceClaims.put("firstName", user.getFirstName());
+        serviceClaims.put("lastName", user.getLastName());
         serviceClaims.put("service", service);
         serviceClaims.put("role", serviceRole.getRole());
         serviceClaims.putAll(serviceRole.getAttributes());

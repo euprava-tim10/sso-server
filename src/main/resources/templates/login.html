@@ -20,8 +20,8 @@
             <p>Saved logins</p>
 
             <a th:each="savedLogin : ${savedLogins}"
-               th:text="${savedLogin.username}"
-               th:href="${'/saved/' + savedLogin.username + '?redirect_uri=' + #uris.escapePathSegment(redirectUri) + '&service=' + #uris.escapePathSegment(service)}"></a>
+               th:text="|${savedLogin.user.firstName} ${savedLogin.user.lastName} (${savedLogin.user.username})|"
+               th:href="|/saved/${savedLogin.user.username}?redirect_uri=${#uris.escapePathSegment(redirectUri)}&service=${#uris.escapePathSegment(service)}"></a>
         </div>
 
         <div class="row justify-content-center">

@@ -2,9 +2,7 @@ package com.borisavz.sso.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -21,8 +19,10 @@ public class SavedLogin {
     @GeneratedValue
     private long id;
 
+    @ManyToOne
+    private User user;
+
     private String ssoToken;
-    private String username;
     private Date expiresAt;
 
     public boolean isValid() {

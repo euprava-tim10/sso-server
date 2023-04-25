@@ -12,14 +12,17 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue
-    private long id;
-
     @Column(unique = true)
     private String username;
+
+    private String firstName;
+    private String lastName;
 
     private String password;
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<ServiceRole> serviceRoles;
+
+    private String fatherJmbg;
+    private String motherJmbg;
 }
