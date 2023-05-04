@@ -63,7 +63,7 @@ public class AuthorizeController {
             redirectAttributes.addAttribute("redirect_uri", redirectUri);
             redirectAttributes.addAttribute("service", service);
 
-            return "redirect://localhost:8080/authorize";
+            return "redirect://localhost:9090/authorize";
         }
 
         if(!responseDTO.isServiceLoginSuccessful())
@@ -87,7 +87,7 @@ public class AuthorizeController {
             redirectAttributes.addAttribute("redirect_uri", loginFormDTO.getRedirectUri());
             redirectAttributes.addAttribute("service", loginFormDTO.getService());
 
-            return "redirect://localhost:8080/authorize";
+            return "redirect://localhost:9090/authorize";
         }
 
         if(!responseDTO.isServiceLoginSuccessful()) {

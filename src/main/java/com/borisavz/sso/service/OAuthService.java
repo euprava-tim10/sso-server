@@ -44,7 +44,16 @@ public class OAuthService {
     }
 
     public TokenResponseDTO generateTokenImplicitGrant(LoginFormDTO loginFormDTO, String ssoToken) {
-        User user = userRepository.findByUsername(loginFormDTO.getUsername());
+        Optional<User> optionalUser = userRepository.findByUsername(loginFormDTO.getUsername());
+
+        if(optionalUser.isEmpty()) {
+            return TokenResponseDTO.builder()
+                    .ssoLoginSuccessful(false)
+                    .serviceLoginSuccessful(false)
+                    .build();
+        }
+
+        User user = optionalUser.get();
 
         if(!passwordEncoder.matches(loginFormDTO.getPassword(), user.getPassword())) {
             return TokenResponseDTO.builder()
@@ -119,7 +128,16 @@ public class OAuthService {
                     .build();
         }
 
-        User user = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+
+        if(optionalUser.isEmpty()) {
+            return TokenResponseDTO.builder()
+                    .ssoLoginSuccessful(false)
+                    .serviceLoginSuccessful(false)
+                    .build();
+        }
+
+        User user = optionalUser.get();
 
         Optional<ServiceRole> optionalServiceRole = user.getServiceRoles().stream()
                 .filter(r -> r.getService().equals(service))
