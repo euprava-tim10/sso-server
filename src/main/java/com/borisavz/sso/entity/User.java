@@ -1,6 +1,8 @@
 package com.borisavz.sso.entity;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,8 +20,10 @@ public class User {
     private String firstName;
     private String lastName;
 
+    @JsonIgnore
     private String password;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     private List<ServiceRole> serviceRoles;
 
