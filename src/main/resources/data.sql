@@ -1,3 +1,9 @@
+DELETE FROM user_service_roles;
+DELETE FROM saved_login;
+
+DELETE FROM user;
+DELETE FROM service_role;
+
 INSERT INTO user(username, father_jmbg, first_name, last_name, mother_jmbg, password)
 	VALUES ('1234567891234', '1234567891233', 'Stefan', 'Vlajkovic', '1234567891232', '$2a$12$.PDCGAJ9s1U3GZ2j24rB6eK/n86EbJW1bSiad7raMnrFs4PIq7OZS');
 INSERT INTO service_role(id, attributes, role, service) VALUES (1, '{"schoolId":1}', "ROLE_ADMIN", "school");
