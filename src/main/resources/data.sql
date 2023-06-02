@@ -44,3 +44,8 @@ INSERT INTO sso.service_role (id,`attributes`,`role`,service) VALUES
 INSERT INTO sso.user_service_roles (user_username,service_roles_id) VALUES
 	 ('111',7),
 	 ('123412341234',8);
+
+INSERT INTO service_role(id, attributes, role, service) VALUES (9, '{"id":2}', "ROLE_USER", "szz");
+INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341234', 9);
+INSERT INTO service_role(id, attributes, role, service) VALUES (10, '{"id":1}', "ROLE_USER", "szz");
+INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341233',10);
