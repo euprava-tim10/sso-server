@@ -31,7 +31,7 @@ INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('1234123
 
 INSERT INTO user(username, father_jmbg, first_name, last_name, mother_jmbg, password)
 	VALUES ('1102997105029', '1234567891111', 'Jovana', 'Milisic', '1234567892222', '$2a$12$abC/Iqm56FM/G4oOZ.xXs.KEuhE5RtQ0oyHQxJngaC1cPUq/S/i.e');
-INSERT INTO service_role(id, attributes, role, service) VALUES (6, '{"companyId":0}', "ROLE_ADMIN", "apr");
+INSERT INTO service_role(id, attributes, role, service) VALUES (6, '{"companyId":1}', "ROLE_ADMIN", "apr");
 INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('1102997105029', 6);
 
 INSERT INTO sso.`user` (username,father_jmbg,first_name,last_name,mother_jmbg,password) VALUES
@@ -49,3 +49,6 @@ INSERT INTO service_role(id, attributes, role, service) VALUES (9, '{"id":2}', "
 INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341234', 9);
 INSERT INTO service_role(id, attributes, role, service) VALUES (10, '{"id":1}', "ROLE_USER", "szz");
 INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341233',10);
+
+INSERT INTO service_role(id, attributes, role, service) VALUES (11, '{"companyId":null}', "ROLE_USER", "apr");
+INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341234', 11);
