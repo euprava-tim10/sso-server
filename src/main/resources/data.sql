@@ -30,9 +30,12 @@ INSERT INTO service_role(id, attributes, role, service) VALUES (5, '{"schoolId":
 INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341231', 5);
 
 INSERT INTO user(username, father_jmbg, first_name, last_name, mother_jmbg, password)
-	VALUES ('1102997105029', '1234567891111', 'Jovana', 'Milisic', '1234567892222', '$2a$12$abC/Iqm56FM/G4oOZ.xXs.KEuhE5RtQ0oyHQxJngaC1cPUq/S/i.e');
+	VALUES ('1102997105029', NULL, 'Jovana', 'Milisic', NULL, '$2a$12$abC/Iqm56FM/G4oOZ.xXs.KEuhE5RtQ0oyHQxJngaC1cPUq/S/i.e');
 INSERT INTO service_role(id, attributes, role, service) VALUES (6, '{"companyId":1}', "ROLE_ADMIN", "apr");
 INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('1102997105029', 6);
+
+INSERT INTO user(username, father_jmbg, first_name, last_name, mother_jmbg, password)
+VALUES ('1234567890123', NULL, 'Mara', 'Maric', NULL, '$2a$12$abC/Iqm56FM/G4oOZ.xXs.KEuhE5RtQ0oyHQxJngaC1cPUq/S/i.e');
 
 INSERT INTO sso.`user` (username,father_jmbg,first_name,last_name,mother_jmbg,password) VALUES
 	 ('111',NULL,'Boro','Borkovic',NULL,'$2a$12$abC/Iqm56FM/G4oOZ.xXs.KEuhE5RtQ0oyHQxJngaC1cPUq/S/i.e');
@@ -52,3 +55,10 @@ INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('1234123
 
 INSERT INTO service_role(id, attributes, role, service) VALUES (11, '{"companyId":null}', "ROLE_USER", "apr");
 INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341234', 11);
+
+
+INSERT INTO service_role(id, attributes, role, service) VALUES (12, '{"companyId":2}', "ROLE_ADMIN", "apr");
+INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('1234567890123', 12);
+
+INSERT INTO service_role(id, attributes, role, service) VALUES (13, '{"companyId":null}', "ROLE_USER", "apr");
+INSERT INTO user_service_roles(user_username, service_roles_id) VALUES ('123412341233', 13);
